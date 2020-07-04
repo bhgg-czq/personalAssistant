@@ -2,11 +2,16 @@ package com.zucc.shortterm.personalassistant;
 
 import android.os.Bundle;
 
+import com.ashokvarma.bottomnavigation.BottomNavigationBar;
+import com.ashokvarma.bottomnavigation.BottomNavigationItem;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.core.view.GravityCompat;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 
@@ -22,13 +27,16 @@ import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
-
+        implements NavigationView.OnNavigationItemSelectedListener,BottomNavigationBar.OnTabSelectedListener{
+        private BottomNavigationBar bottomNavigationBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
+
+
+
         setSupportActionBar(toolbar);
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -45,6 +53,51 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
+//        bottomnavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+
+        intiBottomNavigationBar();
+
+        bottomNavigationBar.setTabSelectedListener(this);
+    }
+
+   public void intiBottomNavigationBar(){
+       bottomNavigationBar= findViewById(R.id.nav_bottom);
+       bottomNavigationBar.setMode(BottomNavigationBar.MODE_SHIFTING);
+       bottomNavigationBar.setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_STATIC);
+       bottomNavigationBar.setBarBackgroundColor(R.color.white);
+       bottomNavigationBar.addItem(new BottomNavigationItem(R.drawable.icon_todo_1, "备忘录").setActiveColorResource(R.color.colorTheme))
+               .addItem(new BottomNavigationItem(R.drawable.icon_record_1, "记账").setActiveColorResource(R.color.colorTheme))
+               .addItem(new BottomNavigationItem(R.drawable.icon_setting_1, "设置").setActiveColorResource(R.color.colorTheme))
+               .setFirstSelectedPosition(0)
+               .initialise(); //所有的设置需在调用该方法前完成
+    }
+
+    @Override
+    public void onTabSelected(int position) {
+        switch (position){
+            case 0:
+
+                break;
+            case 1:
+
+                break;
+            case 2:
+
+                break;
+
+        }
+
+    }
+
+    @Override
+    public void onTabUnselected(int position) {
+
+    }
+
+    @Override
+    public void onTabReselected(int position) {
+
     }
 
     @Override
