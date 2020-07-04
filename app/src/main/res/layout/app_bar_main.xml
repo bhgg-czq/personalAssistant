@@ -28,6 +28,28 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
+        android:layout_marginBottom="50dp"
         app:srcCompat="@android:drawable/ic_dialog_email" />
+
+    <!--<com.google.android.material.bottomnavigation.BottomNavigationView-->
+        <!--android:id="@+id/nav_bottom"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--app:itemIconTint="@drawable/main_bottom_navigation"-->
+        <!--app:menu="@menu/bottom_nagivation"-->
+        <!--android:layout_gravity="bottom"-->
+        <!--android:background="#fff"-->
+
+        <!--&gt;-->
+    <!--</com.google.android.material.bottomnavigation.BottomNavigationView>-->
+    <com.ashokvarma.bottomnavigation.BottomNavigationBar
+        android:id="@+id/nav_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
+        >
+
+    </com.ashokvarma.bottomnavigation.BottomNavigationBar>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
