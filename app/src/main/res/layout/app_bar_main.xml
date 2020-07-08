@@ -7,6 +7,7 @@
     tools:context=".MainActivity">
 
     <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
@@ -20,7 +21,17 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_main" />
+    <include
+        android:id="@+id/layout_content"
+        layout="@layout/content_main"/>
+
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="55dp"
+        android:layout_marginBottom="60dp"
+        android:id="@+id/layout_record"
+        layout="@layout/content_record" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
@@ -41,6 +52,7 @@
         android:layout_alignParentBottom="true"
         android:layout_gravity="bottom"
         >
+
     </com.ashokvarma.bottomnavigation.BottomNavigationBar>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
