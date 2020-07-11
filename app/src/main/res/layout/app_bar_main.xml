@@ -39,9 +39,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="top"
         android:layout_marginRight="@dimen/fab_margin"
+        android:layout_marginBottom="50dp"
         android:src="@drawable/icon_add"
         app:backgroundTint="@color/colorTheme"
-
         app:layout_anchor="@id/nav_bottom"
         app:layout_anchorGravity="end" />
 

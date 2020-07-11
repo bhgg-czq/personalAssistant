@@ -8,16 +8,18 @@ public class BeanRecord {
     private double sum;
     private int type;
     private Date date;
+    private int in;
     private String memo;
 
     public BeanRecord(){};
 
-    public BeanRecord(int id,double sum,int type,Date date,String memo){
+    public BeanRecord(int id,double sum,int type,int inOut,Date date,String memo){
         this.id = id;
         this.sum = sum;
         this.type = type;
         this.date = date;
         this.memo = memo;
+        this.in = inOut;
     }
 
     public int getId() {
@@ -26,6 +28,14 @@ public class BeanRecord {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getIn() {
+        return in;
+    }
+
+    public void setIn(int inOut) {
+        this.in = inOut;
     }
 
     public double getSum() {

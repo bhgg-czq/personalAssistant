@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/shap_corner_up">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="15dp"
+        >
+        <Button
+            android:id="@+id/record_out"
+            android:layout_width="50dp"
+            android:layout_height="25dp"
+            android:layout_alignParentLeft="true"
+            android:background="@drawable/record_button"
+            android:text="支出"
+            android:textColor="@color/gray"
+            android:layout_margin="5dp"/>
+        <Button
+            android:id="@+id/record_in"
+            android:layout_width="50dp"
+            android:layout_height="25dp"
+            android:layout_toRightOf="@+id/record_out"
+            android:background="@drawable/record_button"
+            android:textColor="@color/gray"
+            android:text="收入"
+            android:layout_margin="5dp"/>
+        <TextView
+            android:id="@+id/record_date"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:background="@drawable/record_button"
+            android:text="12月10日"
+            android:padding="5dp"
+            android:layout_margin="5dp"
+            />
+    </RelativeLayout>
+
+    <EditText
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:drawableLeft="@drawable/yuan"
+        android:id="@+id/record_sum"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:textSize="50sp"
+        android:textFontWeight="10"
+        />
+
+    <HorizontalScrollView
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:id="@+id/record_type"
+        android:layout_width="match_parent"
+        android:scrollbars="none"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:id="@+id/record_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"/>
+    </HorizontalScrollView>
+
+    <TextView
+        android:id="@+id/record_memo"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="添加备注"
+        android:textColor="@color/colorTheme"/>
+
+</LinearLayout>

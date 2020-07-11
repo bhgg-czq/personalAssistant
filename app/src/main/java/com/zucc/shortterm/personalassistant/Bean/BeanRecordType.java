@@ -20,7 +20,7 @@ public class BeanRecordType {
     public BeanRecordType(){};
 
     public BeanRecordType(int i,Bitmap icon,String name){
-        this.id = id;
+        this.id = i;
         this.icon = icon;
         this.name = name;
     }
