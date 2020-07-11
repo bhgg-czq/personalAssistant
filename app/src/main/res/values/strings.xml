@@ -24,4 +24,6 @@
     <string name="delete">删除</string>
     <string name="income">收</string>
     <string name="pay">支</string>
+
+    <string name="todo_detail">编辑详情</string>
 </resources>

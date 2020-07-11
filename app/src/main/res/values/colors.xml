@@ -6,11 +6,18 @@
     <color name="editTextGray">#eeeeee</color>
     <color name="colorTheme">#667ed6</color>
     <color name="white">#fff</color>
+    <color name="black">#000</color>
+
     <color name="gray">#8a8a8a</color>
     <color name="red">#e21e29</color>
     <color name="yellow">#e5b728</color>
     <color name="editTextGray_2">#C7C5C5</color>
     <color name="bgGray">#ededed</color>
-    <color name="colorTheme_2">#9AACEC</color>
+    <color name="colorTheme_2">#B0BBEB</color>
+    <color name="colorTheme_4">#C4B3C2EE</color>
+    <color name="colorTheme_3">#e6ebfa</color>
     <color name="app_red">#e75e58</color>
+    <color name="text_gray">#959aa9</color>
+
+
 </resources>
