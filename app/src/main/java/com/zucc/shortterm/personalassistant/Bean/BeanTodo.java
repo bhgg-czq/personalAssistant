@@ -41,6 +41,9 @@ public class BeanTodo implements Serializable{
 
    public  static class Content extends BeanTodo implements Serializable {
 
+        public Content(){
+
+        }
            private int id;
 
            private String detail;

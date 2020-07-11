@@ -110,7 +110,7 @@ public class RecordGroupAdapter extends BaseAdapter {
 
     private void initRecordList(SwipeMenuListView recordList_2,int position){
         //record
-        ArrayList<BeanRecord> list = itemList.get(position).getList() ;
+        final ArrayList<BeanRecord> list = itemList.get(position).getList() ;
         final RecordItemAdapter recordItemAdapter = new RecordItemAdapter(context,list);
         recordList_2.setAdapter(recordItemAdapter);
         recordList_2.setOnItemClickListener(new AdapterView.OnItemClickListener(){

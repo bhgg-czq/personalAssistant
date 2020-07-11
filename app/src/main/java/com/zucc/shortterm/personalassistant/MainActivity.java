@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity
     //初始化列表
     private ArrayList<BeanRecordGroup> groupList = new ArrayList<>();
     //当前实例
-    private BeanTodo currentTodo = new BeanTodo();
+    private BeanTodo.Content currentTodo = new BeanTodo.Content();
     private BeanRecord currentRecord = new BeanRecord();
 
     //数据库实例
@@ -218,7 +218,7 @@ public class MainActivity extends AppCompatActivity
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
         window.setAttributes(lp);
 
-        EditText recordsum = inflateRecord.findViewById(R.id.record_sum);
+        final EditText recordsum = inflateRecord.findViewById(R.id.record_sum);
         recordsum.setInputType(EditorInfo.TYPE_CLASS_NUMBER);
         recordsum.setFocusable(true);
         recordsum.setFocusableInTouchMode(true);
@@ -232,20 +232,20 @@ public class MainActivity extends AppCompatActivity
         },100);
 
         HorizontalScrollView horizontalScrollView = inflateRecord.findViewById(R.id.record_type);
-        LinearLayout container = inflateRecord.findViewById(R.id.record_container);
+        final LinearLayout container = inflateRecord.findViewById(R.id.record_container);
 
-        LinearLayout.LayoutParams layoutParams =  new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+        final LinearLayout.LayoutParams layoutParams =  new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
-        LinearLayout.LayoutParams imagelayoutParams = new LinearLayout.LayoutParams(100, 100);
+        final LinearLayout.LayoutParams imagelayoutParams = new LinearLayout.LayoutParams(100, 100);
         imagelayoutParams.gravity = Gravity.CENTER_HORIZONTAL;
         imagelayoutParams.setMargins(5,2,15,5);
-        LinearLayout.LayoutParams textlayoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+        final LinearLayout.LayoutParams textlayoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
         textlayoutParams.gravity = Gravity.CENTER_HORIZONTAL;
         textlayoutParams.setMargins(0,0,15,5);
 
-        Button in = inflateRecord.findViewById(R.id.record_in);
-        Button out = inflateRecord.findViewById(R.id.record_out);
+        final Button in = inflateRecord.findViewById(R.id.record_in);
+        final Button out = inflateRecord.findViewById(R.id.record_out);
         in.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -254,10 +254,10 @@ public class MainActivity extends AppCompatActivity
                 container.removeAllViews();
                 out.setTextColor(getResources().getColor(R.color.gray));
                 for(int i = 0;i<BeanRecordType.inlist.size();i++){
-                    LinearLayout linearLayout = new LinearLayout(getApplicationContext());
+                    final LinearLayout linearLayout = new LinearLayout(getApplicationContext());
                     linearLayout.setOrientation(LinearLayout.VERTICAL);
                     linearLayout.setLayoutParams(layoutParams);
-                    ImageView imageView = new ImageView(getApplicationContext());
+                    final ImageView imageView = new ImageView(getApplicationContext());
                     imageView.setImageBitmap(BeanRecordType.inlist.get(i).getIcon());;
                     imageView.setLayoutParams(imagelayoutParams);
                     imageView.setTag(BeanRecordType.inlist.get(i).getId());
@@ -302,10 +302,10 @@ public class MainActivity extends AppCompatActivity
                 container.removeAllViews();
                 in.setTextColor(getResources().getColor(R.color.gray));
                 for(int i = 0;i<BeanRecordType.outlist.size();i++){
-                    LinearLayout linearLayout = new LinearLayout(getApplicationContext());
+                    final LinearLayout linearLayout = new LinearLayout(getApplicationContext());
                     linearLayout.setOrientation(LinearLayout.VERTICAL);
                     linearLayout.setLayoutParams(layoutParams);
-                    ImageView imageView = new ImageView(getApplicationContext());
+                    final ImageView imageView = new ImageView(getApplicationContext());
                     imageView.setImageBitmap(BeanRecordType.outlist.get(i).getIcon());;
                     imageView.setLayoutParams(imagelayoutParams);
                     imageView.setTag(BeanRecordType.outlist.get(i).getId());
@@ -344,8 +344,8 @@ public class MainActivity extends AppCompatActivity
         });
         out.performClick();
 
-        TextView recordMemo = inflateRecord.findViewById(R.id.record_memo);
-        Dialog memo = new Dialog(this,R.style.ActionSheetDialogStyle);
+        final TextView recordMemo = inflateRecord.findViewById(R.id.record_memo);
+        final Dialog memo = new Dialog(this,R.style.ActionSheetDialogStyle);
         View memoview = LayoutInflater.from(this).inflate(R.layout.dialog_record_memo,null);
         memo.setContentView(memoview);
         Window window1 = memo.getWindow();
@@ -354,7 +354,7 @@ public class MainActivity extends AppCompatActivity
         lp1.width = WindowManager.LayoutParams.MATCH_PARENT;
         lp1.height = WindowManager.LayoutParams.WRAP_CONTENT;
         window1.setAttributes(lp1);
-        EditText memoTxet = memoview.findViewById(R.id.record_memo_text);
+        final EditText memoTxet = memoview.findViewById(R.id.record_memo_text);
         memoTxet.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -417,8 +417,8 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        TextView recordDate = inflateRecord.findViewById(R.id.record_date);
-        Dialog calendar = new Dialog(this,R.style.ActionSheetDialogStyle);
+        final TextView recordDate = inflateRecord.findViewById(R.id.record_date);
+        final Dialog calendar = new Dialog(this,R.style.ActionSheetDialogStyle);
         View dateview = LayoutInflater.from(this).inflate(R.layout.dialog_record_date,null);
         calendar.setContentView(dateview);
         Window window2 = calendar.getWindow();
@@ -427,7 +427,7 @@ public class MainActivity extends AppCompatActivity
         lp2.width = WindowManager.LayoutParams.MATCH_PARENT;
         window2.setAttributes(lp2);
         ImageButton dateback = dateview.findViewById(R.id.record_date_back);
-        MaterialCalendarView mc = dateview.findViewById(R.id.record_date_date);
+        final MaterialCalendarView mc = dateview.findViewById(R.id.record_date_date);
         mc.setSelectedDate(new Date());
         dateback.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -489,15 +489,15 @@ public class MainActivity extends AppCompatActivity
     public void initCalendar(){
         dialogCalendar = new Dialog(this,R.style.ActionSheetDialogStyle);
         inflateCalendar = LayoutInflater.from(this).inflate(R.layout.dialog_calendar,null);
-        MaterialCalendarView todoCalendar= inflateCalendar.findViewById(R.id.todoCalendar);
+        final MaterialCalendarView todoCalendar= inflateCalendar.findViewById(R.id.todoCalendar);
         Button cancel = inflateCalendar.findViewById(R.id.cancel_calendar);
         Button sure = inflateCalendar.findViewById(R.id.sure_calendar);
         //选择时间
         LinearLayout time = inflateCalendar.findViewById(R.id.time);
-        TextView timeText = inflateCalendar.findViewById(R.id.time_text);
-        ImageView timeImage = inflateCalendar.findViewById(R.id.time_image);
-        Dialog timePickerDialog = new Dialog(this,R.style.ActionSheetDialogStyle);
-        View timeFlater = LayoutInflater.from(this).inflate(R.layout.dialog_time,null);
+        final TextView timeText = inflateCalendar.findViewById(R.id.time_text);
+        final ImageView timeImage = inflateCalendar.findViewById(R.id.time_image);
+        final Dialog timePickerDialog = new Dialog(this,R.style.ActionSheetDialogStyle);
+        final View timeFlater = LayoutInflater.from(this).inflate(R.layout.dialog_time,null);
         timePickerDialog.setContentView(timeFlater);
         Window tWindow = timePickerDialog.getWindow();
         tWindow.setGravity(Gravity.CENTER);
@@ -505,7 +505,7 @@ public class MainActivity extends AppCompatActivity
         time.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TimePicker timePicker = timeFlater.findViewById(R.id.time_picker);
+                final TimePicker timePicker = timeFlater.findViewById(R.id.time_picker);
                 timePicker.setCurrentHour(new Date().getHours());
                 timePicker.setCurrentMinute(new Date().getMinutes());
                 Button timeSure = timeFlater.findViewById(R.id.sure_time);
@@ -534,10 +534,10 @@ public class MainActivity extends AppCompatActivity
         });
         // 选择提醒
         LinearLayout remind = inflateCalendar.findViewById(R.id.remind);
-        TextView remindText = inflateCalendar.findViewById(R.id.remind_text);
-        ImageView reminImage = inflateCalendar.findViewById(R.id.remind_image);
-        Dialog remindDialog = new Dialog(this,R.style.ActionSheetDialogStyle);
-        View remindFlater = LayoutInflater.from(this).inflate(R.layout.dialog_remind,null);
+        final TextView remindText = inflateCalendar.findViewById(R.id.remind_text);
+        final ImageView reminImage = inflateCalendar.findViewById(R.id.remind_image);
+        final Dialog remindDialog = new Dialog(this,R.style.ActionSheetDialogStyle);
+        final View remindFlater = LayoutInflater.from(this).inflate(R.layout.dialog_remind,null);
         remindDialog.setContentView(remindFlater);
         Window rWindow = remindDialog.getWindow();
         rWindow.setGravity(Gravity.CENTER);
