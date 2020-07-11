@@ -31,6 +31,7 @@ public class MyDatebaseHelper extends SQLiteOpenHelper {
         db.execSQL("create table if not exists records"+
                 "(id INTEGER  PRIMARY KEY AUTOINCREMENT,"+
                 "sum REAL,"+
+                "isIn INTEGER,"+
                 "type INTEGER,"+
                 "date TEXT,"+
                 "memo TEXT)");

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    >
+
+    <TimePicker
+        android:id="@+id/time_picker"
+        android:timePickerMode="spinner"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:numbersTextColor="@color/colorTheme"
+        />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/cancel_time"
+            android:layout_width="200dp"
+            android:layout_height="match_parent"
+            android:text="取消"
+            android:gravity="center"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_alignParentLeft="true"
+            android:background="@drawable/button_noaction"
+            android:textColor="@color/colorTheme"/>
+        <Button
+            android:id="@+id/sure_time"
+            android:layout_width="200dp"
+            android:layout_height="match_parent"
+            android:text="确定"
+            android:gravity="center"
+            style="?android:attr/borderlessButtonStyle"
+            android:background="@drawable/button_noaction"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/colorTheme"
+            />
+    </RelativeLayout>
+</LinearLayout>

@@ -7,6 +7,9 @@ public class BeanRecordGroup {
     private Date date;
     private ArrayList<BeanRecord> list;
 
+    public BeanRecordGroup(){
+
+    }
     public BeanRecordGroup(Date date,ArrayList<BeanRecord> list){
         this.date = date;
         this.list = list;

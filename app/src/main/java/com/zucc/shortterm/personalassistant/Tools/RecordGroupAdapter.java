@@ -18,6 +18,7 @@ import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.zucc.shortterm.personalassistant.Bean.BeanRecord;
 import com.zucc.shortterm.personalassistant.Bean.BeanRecordGroup;
+import com.zucc.shortterm.personalassistant.DB.MyDatebaseManager;
 import com.zucc.shortterm.personalassistant.R;
 
 import java.text.SimpleDateFormat;
@@ -29,11 +30,14 @@ public class RecordGroupAdapter extends BaseAdapter {
     private LayoutInflater inflater;
     ArrayList<BeanRecordGroup> itemList;
     private Context context;
+    //数据库实例
+    private MyDatebaseManager dbmanager;
 
     public RecordGroupAdapter(Context context, ArrayList<BeanRecordGroup> itemList){
         this.inflater = LayoutInflater.from(context);
         this.itemList = itemList;
         this.context = context;
+        this.dbmanager = new MyDatebaseManager(context);
     }
 
 
@@ -79,7 +83,6 @@ public class RecordGroupAdapter extends BaseAdapter {
         this.notifyDataSetChanged();
         return convertView;
     }
-
 
     /**
      * @param listView 此方法是本次listview嵌套listview的核心方法：计算parentlistview item的高度。
@@ -132,7 +135,9 @@ public class RecordGroupAdapter extends BaseAdapter {
         recordList_2.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
-                itemList.remove(position);
+                System.out.println(list.get(position).getId()+"hellow????");
+                dbmanager.deleteRecord(list.get(position).getId());
+                list.remove(position);
                 recordItemAdapter.notifyDataSetChanged();
                 return true;
             }
