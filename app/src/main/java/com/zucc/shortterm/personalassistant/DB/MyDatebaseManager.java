@@ -22,15 +22,15 @@ public class MyDatebaseManager {
         db = helper.getWritableDatabase();
     }
     public void addTodo(BeanTodo todos) {
-        ContentValues values=new ContentValues();
-        values.put("title",todos.getTitle());
-
-        values.put("remind",todos.getRemind());
-        if (todos.getRemind()!=0){
-            values.put("date",todos.getDate().toString());
-        }
-        values.put("haveDown",0);
-        values.put("PRI",todos.getPRI());
+//        ContentValues values=new ContentValues();
+//        values.put("title",todos.getTitle());
+//
+//        values.put("remind",todos.getRemind());
+//        if (todos.getRemind()!=0){
+//            values.put("date",todos.getDate().toString());
+//        }
+//        values.put("haveDown",0);
+//        values.put("PRI",todos.getPRI());
 
     }
 

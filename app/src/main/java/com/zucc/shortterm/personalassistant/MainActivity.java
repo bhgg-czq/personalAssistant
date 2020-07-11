@@ -1,5 +1,6 @@
 package com.zucc.shortterm.personalassistant;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -35,13 +36,18 @@ import com.zucc.shortterm.personalassistant.Bean.BeanRecordGroup;
 import com.zucc.shortterm.personalassistant.Bean.BeanRecordType;
 import com.zucc.shortterm.personalassistant.Tools.RecordGroupAdapter;
 import com.zucc.shortterm.personalassistant.Tools.RecordItemAdapter;
+import com.zucc.shortterm.personalassistant.Tools.TodoItemAdapter;
 
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.ListAdapter;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.Menu;
+import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -66,6 +72,9 @@ public class MainActivity extends AppCompatActivity
     private View content,record;
     //recordList
     private ListView recordList;
+    //todoList
+    private List<BeanTodo> beanTodoList=new ArrayList<>();
+
     //czq
     private Dialog dialog,dialog2;
     private View inflate,inflate2;
@@ -75,12 +84,41 @@ public class MainActivity extends AppCompatActivity
     private TextView textRankH,textRankN,textRankM,textRankL;
     private ImageView nav_dialog_remind,nav_dialog_pri;
     private int pri=0;
+
+
+
         @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
 
+        //登陆
+            ImageView imagelogin=findViewById(R.id.imagelogin);
+            TextView textlogin=findViewById(R.id.textlogin);
+
+
+        RecyclerView recyclerView = findViewById(R.id.recyclelist);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        initTodoListItem();
+        TodoItemAdapter adapter=new TodoItemAdapter(beanTodoList);
+        recyclerView.setAdapter(adapter);
+
+            adapter.setOnitemClickLintener(new TodoItemAdapter.OnitemClick() {
+                @Override
+                public void onItemClick(BeanTodo.Content item) {
+                    Log.d("dsfsdf",item.getName());
+                    Intent intent =new Intent(MainActivity.this,TodoDetialActivity.class);
+                    intent.putExtra("item_info",item);
+                    startActivity(intent);
+                }
+            });
+
+            adapter.setOnLongClickListener(new TodoItemAdapter.OnLongClick() {
+                @Override
+                public void onLongClick(BeanTodo.Content item) {
+                }
+            });
 
 
         setSupportActionBar(toolbar);
@@ -91,6 +129,7 @@ public class MainActivity extends AppCompatActivity
                 showContentDialog();
             }
         });
+
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -98,6 +137,7 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
+
 
         //include View
         content = findViewById(R.id.layout_content);
@@ -109,6 +149,7 @@ public class MainActivity extends AppCompatActivity
 
         //czq
         initPRI();
+
         //record数据
         initRecord();
         recordList = (ListView)findViewById(R.id.recordList);
@@ -127,6 +168,13 @@ public class MainActivity extends AppCompatActivity
         recordList.setAdapter(recordGroupAdapter);
     }
 
+    //登陆跳转
+    public void toLogin(View view){
+        Intent intent=new Intent();
+        intent = new Intent(MainActivity.this, LoginActivity.class);
+        startActivity(intent);
+            Log.d("aaaaa","afadfasfasdf");
+    }
    public void intiBottomNavigationBar(){
        bottomNavigationBar= findViewById(R.id.nav_bottom);
        bottomNavigationBar.setMode(BottomNavigationBar.MODE_SHIFTING);
@@ -268,20 +316,57 @@ public class MainActivity extends AppCompatActivity
 
     //点击确定添加记录
     public void onClickSure(View v){
-        BeanTodo t=new BeanTodo();
-        if (!nav_dialog_edit.getText().toString().isEmpty())
-        {
-            t.setTitle(nav_dialog_edit.getText().toString());
-            Log.d("a",nav_dialog_edit.getText().toString());
-            t.setPRI(pri);
-            t.setRemind(0);
-            myDatebaseManager.addTodo(t);
-            Log.d("record","添加成功");
-            pri=0;
+//        BeanTodo t=new BeanTodo();
+//        if (!nav_dialog_edit.getText().toString().isEmpty())
+//        {
+//            t.Content.(nav_dialog_edit.getText().toString());
+//            Log.d("a",nav_dialog_edit.getText().toString());
+//            t.setPRI(2);
+//            t.setRemind(0);
+//            myDatebaseManager.addTodo(t);
+//            Log.d("record","添加成功");
+//            pri=0;
+//        }
+//        else{
+//            Log.d("a", "error");
+//        }
+
+    }
+
+
+    private void initTodoListItem() {
+
+        BeanTodo.Content item = new BeanTodo.Content(1,"好好学习1","ds",0,new Date(System.currentTimeMillis()),1,1,"fdfdfd");
+        BeanTodo.Content item2 = new BeanTodo.Content(2,"好好学习2","fdf",1,new Date(System.currentTimeMillis()),1,1,"fdfdfd");
+        BeanTodo.Content item3 = new BeanTodo.Content(3,"好好学习3","fdfdfdfd",1,new Date(System.currentTimeMillis()),1,1,"fdfdfd");
+
+        List<BeanTodo>list=new ArrayList<>();
+                list.add(item3);
+                list.add(item);
+                list.add(item2);
+        BeanTodo haveNotTitle=new BeanTodo.Title("未完成");
+        BeanTodo haveDoneTitle=new BeanTodo.Title("已完成");
+        List<BeanTodo.Content> notHaveDone =new ArrayList<>();
+        List<BeanTodo.Content> haveDone =new ArrayList<>();
+
+        for(int i=0;i<list.size();i++){
+                BeanTodo.Content a=(BeanTodo.Content)list.get(i);
+                if (a.getHaveDown()==0)
+                    notHaveDone.add((BeanTodo.Content)list.get(i));
+                else
+                    haveDone.add((BeanTodo.Content)list.get(i));
+            }
+
+        if (notHaveDone.size()!=0){
+            beanTodoList.add(haveNotTitle);
+            beanTodoList.addAll(notHaveDone);
         }
-        else{
-            Log.d("a", "error");
+
+        if (haveDone.size()!=0){
+           beanTodoList.add(haveDoneTitle);
+           beanTodoList.addAll(haveDone);
         }
+
 
     }
 
@@ -302,6 +387,7 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    //右上角设置按钮
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
