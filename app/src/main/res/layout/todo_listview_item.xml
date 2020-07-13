@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="50dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -13,10 +13,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:checked="false"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
         android:layout_marginTop="10dp"
         android:theme="@style/MyCheckBox"
+
 
 
         />
@@ -27,19 +28,46 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="学习"
-        app:layout_constraintCircle="@id/checkbox"
-        app:layout_constraintCircleAngle="90"
-        app:layout_constraintCircleRadius="50dp"
+        android:layout_toRightOf="@id/checkbox"
+        android:layout_marginTop="7dp"
+        android:layout_alignTop="@id/checkbox"
+        android:layout_marginLeft="15dp"
         />
+
+    <ImageView
+        android:id="@+id/detail_remind"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/icon_alarm"
+        android:layout_toRightOf="@id/checkbox"
+        android:layout_marginLeft="210dp"
+        android:layout_alignTop="@id/checkbox"
+        android:layout_marginTop="7dp"
+        android:visibility="gone"
+        />
+    <ImageView
+        android:id="@+id/detail_pri"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/icon_pri_1"
+        android:layout_toRightOf="@id/checkbox"
+        android:layout_marginLeft="230dp"
+        android:layout_alignTop="@id/checkbox"
+        android:visibility="gone"
+        android:layout_marginTop="7dp"
+        />
+
     <TextView
         android:id="@+id/time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="今天"
-        app:layout_constraintCircle="@id/checkbox"
-        app:layout_constraintCircleAngle="90"
-        app:layout_constraintCircleRadius="270dp"
+        android:layout_toRightOf="@id/checkbox"
+        android:layout_marginLeft="255dp"
+        android:layout_marginTop="7dp"
+        android:layout_alignTop="@id/checkbox"
         />
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+</RelativeLayout>

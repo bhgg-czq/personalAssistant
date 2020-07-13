@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -26,7 +27,7 @@ public class TodoItemAdapter extends RecyclerView.Adapter{
     private OnitemClick onitemClick;   //定义点击事件接口
     private OnLongClick onLongClick;  //定义长按事件接口
     private List<BeanTodo> mList;
-    private DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+    private DateFormat format = new SimpleDateFormat("MM-dd");
 
     public TodoItemAdapter(List<BeanTodo> mList)
     {
@@ -43,7 +44,7 @@ public class TodoItemAdapter extends RecyclerView.Adapter{
 
     //定义一个点击事件的接口
     public interface OnitemClick {
-        void onItemClick(BeanTodo.Content item);
+        void onItemClick(BeanTodo.Content item,int position);
     }
     //定义一个长按事件的接口
     public interface OnLongClick {
@@ -54,6 +55,8 @@ public class TodoItemAdapter extends RecyclerView.Adapter{
         AppCompatCheckBox checkBox;
         TextView text;
         TextView time;
+        ImageView remind;
+        ImageView pri;
         View itemview;
 
         ContentViewHolder(View view) {
@@ -62,6 +65,8 @@ public class TodoItemAdapter extends RecyclerView.Adapter{
             checkBox = view.findViewById(R.id.checkbox);
             text=view.findViewById(R.id.text);
             time = view.findViewById(R.id.time);
+            remind=view.findViewById(R.id.detail_remind);
+            pri=view.findViewById(R.id.detail_pri);
         }
 
 
@@ -83,20 +88,10 @@ public class TodoItemAdapter extends RecyclerView.Adapter{
             return new ContentViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.todo_listview_item, parent, false));
         else
             return new TitleViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.todo_listview_header, parent, false));
-
-
-
-
-
-
-
-    }
+   }
     @Override
     public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, final int position) {
-
-
-
-        if (getItemViewType(position) == LIST_ITEM) {
+          if (getItemViewType(position) == LIST_ITEM) {
             final ContentViewHolder contentViewHolder = (ContentViewHolder) holder;
 
             BeanTodo.Content content = (BeanTodo.Content) mList.get(position);
@@ -104,6 +99,26 @@ public class TodoItemAdapter extends RecyclerView.Adapter{
             contentViewHolder.checkBox.setChecked((content.getHaveDown()==1)? true:false);
             contentViewHolder.text.setText(content.getName());
             contentViewHolder.time.setText(format.format(content.getDate()));
+            contentViewHolder.pri.setImageResource(R.drawable.icon_pri_1);
+            contentViewHolder.remind.setImageResource(R.drawable.icon_alarm);
+
+            Log.d("显示",String.valueOf(content.getRemind()));
+              Log.d("显示",String.valueOf(content.getPRI()));
+            if (content.getPRI()!=0){
+
+                contentViewHolder.pri.setVisibility(View.VISIBLE);
+                switch (content.getPRI()){
+                    case 1:contentViewHolder.pri.setColorFilter(0xffe21e29);
+                         break;
+                    case 2:contentViewHolder.pri.setColorFilter(0xffe5b728);
+                        break;
+                    case 3:contentViewHolder.pri.setColorFilter(0xff667ed6);
+                        break;
+                     }
+            }
+
+            if (content.getRemind()!=0)
+                contentViewHolder.remind.setVisibility(View.VISIBLE);
 
             switch(content.getHaveDown()){
                 case 0:
@@ -159,7 +174,7 @@ public class TodoItemAdapter extends RecyclerView.Adapter{
                     int position=holder.getAdapterPosition();
 
                     BeanTodo.Content item=(BeanTodo.Content)mList.get(position);
-                    onitemClick.onItemClick(item);
+                    onitemClick.onItemClick(item,position);
                 }
             });
         }

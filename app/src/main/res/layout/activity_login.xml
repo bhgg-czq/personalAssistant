@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:id="@+id/loginLayout"
+    >
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -18,8 +20,8 @@
             app:popupTheme="@style/AppTheme.PopupOverlay">
 
             <ImageButton
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
                 android:background="@drawable/back_line"></ImageButton>
             <TextView
                 android:layout_width="wrap_content"
@@ -33,6 +35,7 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <EditText
+        android:id="@+id/number"
         android:layout_width="320dp"
         android:layout_height="50dp"
         android:hint="@string/login_name"
@@ -40,9 +43,10 @@
         android:gravity="center_vertical"
         android:layout_marginTop="30dp"
         android:paddingLeft="10dp"
-        android:textSize="25px"
+        android:textSize="12sp"
         android:background="@drawable/bg_edittext_normal"></EditText>
     <EditText
+        android:id="@+id/login_pwd"
         android:layout_width="320dp"
         android:layout_height="50dp"
         android:hint="@string/login_pwd"
@@ -50,18 +54,24 @@
         android:gravity="center_vertical"
         android:layout_marginTop="10dp"
         android:paddingLeft="10dp"
-        android:textSize="25px"
-        android:background="@drawable/bg_edittext_normal"></EditText>
+        android:textSize="12sp"
+        android:background="@drawable/bg_edittext_normal"
+        android:inputType="textPassword"
+        ></EditText>
     <Button
+        android:id="@+id/login_button"
         android:layout_width="320dp"
         android:layout_height="40dp"
         android:hint="@string/login_button"
         android:layout_gravity="center"
         android:gravity="center"
         android:layout_marginTop="40dp"
-        android:textSize="25px"
-        android:textColor="@color/white"
-        android:background="@drawable/bg_button_normal">
+        android:textSize="18sp"
+
+        android:textFontWeight="500"
+        android:background="@drawable/bg_button_normal"
+        android:textColor="#fff"
+        >
 
     </Button>
 

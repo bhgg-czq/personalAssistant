@@ -26,7 +26,7 @@ public class MyDatebaseHelper extends SQLiteOpenHelper {
                 "date TEXT,"+
                 "remind INTEGER,"+//0：无 1：当天 2：提前1天 3：提前2天 4：提前3天 5：提前一周
                 "PRI INTEGER,"+ //1：高优先级 2：中优先级 3：低优先级 4：无优先级
-                "tag TEXT)");
+                "repeat INTEGER)");//0:无 1：每天 2：每周工作日（一-五） 3：每周周末（六，七）
         //创建
         db.execSQL("create table if not exists records"+
                 "(id INTEGER  PRIMARY KEY AUTOINCREMENT,"+
