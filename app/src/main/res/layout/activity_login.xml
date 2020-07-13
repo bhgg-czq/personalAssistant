@@ -35,6 +35,7 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <EditText
+        android:id="@+id/number"
         android:layout_width="320dp"
         android:layout_height="50dp"
         android:hint="@string/login_name"
@@ -42,9 +43,10 @@
         android:gravity="center_vertical"
         android:layout_marginTop="30dp"
         android:paddingLeft="10dp"
-        android:textSize="25px"
+        android:textSize="12sp"
         android:background="@drawable/bg_edittext_normal"></EditText>
     <EditText
+        android:id="@+id/login_pwd"
         android:layout_width="320dp"
         android:layout_height="50dp"
         android:hint="@string/login_pwd"
@@ -52,16 +54,18 @@
         android:gravity="center_vertical"
         android:layout_marginTop="10dp"
         android:paddingLeft="10dp"
-        android:textSize="25px"
+        android:inputType="textPassword"
+        android:textSize="12sp"
         android:background="@drawable/bg_edittext_normal"></EditText>
     <Button
+        android:id="@+id/login_button"
         android:layout_width="320dp"
         android:layout_height="40dp"
         android:hint="@string/login_button"
         android:layout_gravity="center"
         android:gravity="center"
         android:layout_marginTop="40dp"
-        android:textSize="25px"
+        android:textSize="18sp"
         android:textColor="@color/white"
         android:background="@drawable/bg_button_normal">
 

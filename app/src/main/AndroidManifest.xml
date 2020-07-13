@@ -9,7 +9,6 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-
         android:usesCleartextTraffic="true"
         android:theme="@style/AppTheme">
         <activity
@@ -22,10 +21,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activity.LoginActivity"/>
         <activity android:name=".Activity.TodoDetialActivity"/>
+        <activity android:name=".Activity.LoginActivity"/>
         <activity android:name=".Activity.CountActivity"/>
         <activity android:name=".Activity.FinancingActivity"/>
+        <receiver
+            android:name=".Tools.AutoReceiver"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

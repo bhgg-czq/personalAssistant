@@ -4,85 +4,64 @@
     android:layout_height="match_parent"
     android:background="@drawable/shap_corner_white">
 
+
     <RadioGroup
-        android:id="@+id/remind_box"
+        android:id="@+id/repeat_box"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:padding="20dp">
+        android:padding="20dp"
 
+        >
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="提醒"
+            android:text="重复"
             android:textSize="20sp"
             android:textFontWeight="500"
             android:layout_marginBottom="10dp"
             />
-
         <RadioButton
-            android:id="@+id/remind_0"
+            android:id="@+id/repeat_0"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:buttonTint="@color/colorTheme"
             android:textColor="@color/gray"
             android:textSize="18sp"
-            android:text="无"
+            android:text="永不"
             android:tag="0"
             android:layout_marginTop="10dp"
             />
         <RadioButton
-            android:id="@+id/remind_1"
+            android:id="@+id/repeat_1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:buttonTint="@color/colorTheme"
             android:textColor="@color/gray"
             android:textSize="18sp"
-            android:text="当天"
+            android:text="每天"
             android:tag="1"
             android:layout_marginTop="10dp"
             />
         <RadioButton
-            android:id="@+id/remind_2"
+            android:id="@+id/repeat_2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:buttonTint="@color/colorTheme"
             android:textColor="@color/gray"
             android:textSize="18sp"
-            android:text="提前1天"
+            android:text="每周工作日（周一至周五）"
             android:tag="2"
             android:layout_marginTop="10dp"
             />
         <RadioButton
-            android:id="@+id/remind_3"
+            android:id="@+id/repeat_3"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:buttonTint="@color/colorTheme"
             android:textColor="@color/gray"
             android:textSize="18sp"
-            android:text="提前2天"
+            android:text="周末（周六和周日）"
             android:tag="3"
-            android:layout_marginTop="10dp"
-            />
-        <RadioButton
-            android:id="@+id/remind_4"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:buttonTint="@color/colorTheme"
-            android:textColor="@color/gray"
-            android:textSize="18sp"
-            android:text="提前3天"
-            android:tag="4"
-            android:layout_marginTop="10dp"
-            />
-        <RadioButton
-            android:id="@+id/remind_5"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:buttonTint="@color/colorTheme"
-            android:textColor="@color/gray"
-            android:textSize="18sp"
-            android:text="提前1周"
-            android:tag="5"
             android:layout_marginTop="10dp"
             />
     </RadioGroup>

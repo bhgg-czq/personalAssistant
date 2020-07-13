@@ -1,5 +1,11 @@
 package com.zucc.shortterm.personalassistant.Activity;
 
+
+import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -15,7 +21,9 @@ import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
+import android.renderscript.Sampler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -24,10 +32,11 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.NotificationCompat;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.view.GravityCompat;
 import androidx.appcompat.app.ActionBarDrawerToggle;
-
 import android.view.MenuItem;
 
 import com.google.android.material.navigation.NavigationView;
@@ -38,6 +47,7 @@ import com.zucc.shortterm.personalassistant.DB.MyDatebaseManager;
 import com.zucc.shortterm.personalassistant.Bean.BeanRecord;
 import com.zucc.shortterm.personalassistant.Bean.BeanRecordGroup;
 import com.zucc.shortterm.personalassistant.Bean.BeanRecordType;
+import com.zucc.shortterm.personalassistant.Tools.AutoReceiver;
 import com.zucc.shortterm.personalassistant.R;
 import com.zucc.shortterm.personalassistant.Tools.RecordGroupAdapter;
 import com.zucc.shortterm.personalassistant.Tools.TodoItemAdapter;
@@ -59,11 +69,13 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
-import java.sql.PreparedStatement;
+import java.util.Calendar;
+import java.util.Collections;
 import java.util.ArrayList;
 import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.sql.PreparedStatement;
 import java.util.List;
 
 import android.view.Window;
@@ -83,15 +95,22 @@ public class MainActivity extends AppCompatActivity
     private int nowLayout = 1;
     //include View
     private View content,record;
+    private final String CHANNEL_ID="001";
+    private final String CHANNEL_NAME="chanel";
+    private final String CHANNEL_DESCRIPTION="no";
     //recordList
     private ListView recordList;
     private RecordGroupAdapter recordGroupAdapter;
+    private TodoItemAdapter adapter;
 
     //todoList
-    private List<BeanTodo> beanTodoList=new ArrayList<>();
+    private ArrayList<BeanTodo> beanTodoList=new ArrayList<>();
     //tod o
+    //当前点击的位置
+    private int pos;
+    private  AlertDialog.Builder dialogdelete;
     private Dialog dialogInfo,dialogPri,dialogCalendar;
-    private View inflateInfo,inflatePri,inflateCalendar;
+    private View inflateInfo,inflatePri,inflateCalendar,inflateLogin;
     private EditText nav_dialog_edit;
     private Button nav_dialog_button;
     private MyDatebaseManager myDatebaseManager;
@@ -104,7 +123,7 @@ public class MainActivity extends AppCompatActivity
     //初始化列表
     private ArrayList<BeanRecordGroup> groupList = new ArrayList<>();
     //当前实例
-    private BeanTodo.Content currentTodo = new BeanTodo.Content();
+    private BeanTodo.Content currentTodo = new BeanTodo.Content(1,"",null,0,new Date(),0,0,0);
     private BeanRecord currentRecord = new BeanRecord();
 
     //数据库实例
@@ -112,6 +131,18 @@ public class MainActivity extends AppCompatActivity
 
     private Switch aSwitch;
     private SharedPreferences sharedPreferences;
+    List<BeanTodo.Content> notHaveDone =new ArrayList<>();
+    List<BeanTodo.Content> haveDone =new ArrayList<>();
+
+    //发送通知
+    private List<Date> messages=new ArrayList<>();
+
+    //长按获得的todoitem
+    private BeanTodo.Content todoitem;
+
+    //是否登陆
+
+    private Boolean isLogin=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,31 +159,56 @@ public class MainActivity extends AppCompatActivity
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         }
 
+        isLogin = sharedPreferences.getBoolean("isLogin",false);
+
+        Log.d("wowowowwo",isLogin.toString());
+        dbmanager = new MyDatebaseManager(this);
+        inflateLogin = LayoutInflater.from(this).inflate(R.layout.nav_header_main,null);
 
         //登陆
-        ImageView imagelogin=findViewById(R.id.imagelogin);
-        TextView textlogin=findViewById(R.id.textlogin);
+        ImageView imagelogin=inflateLogin.findViewById(R.id.imagelogin);
+        TextView textlogin=inflateLogin.findViewById(R.id.textlogin);
+
+        if (isLogin){
+            System.out.println("loginnnnnnnnnnnnn");
+            imagelogin.setImageResource(R.drawable.icon_head_2);
+            textlogin.setVisibility(View.GONE);
+        }
+
+        //发送通知
+        createChannel();
 
 
+        dialogdelete = new AlertDialog.Builder(this);
+
+        //todolist
         RecyclerView recyclerView = findViewById(R.id.recyclelist);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         initTodoListItem();
-        TodoItemAdapter adapter=new TodoItemAdapter(beanTodoList);
+        adapter=new TodoItemAdapter(beanTodoList);
         recyclerView.setAdapter(adapter);
 
         adapter.setOnitemClickLintener(new TodoItemAdapter.OnitemClick() {
             @Override
-            public void onItemClick(BeanTodo.Content item) {
-                Log.d("dsfsdf",item.getName());
-                Intent intent =new Intent(MainActivity.this, TodoDetialActivity.class);
+            public void onItemClick(BeanTodo.Content item,int position) {
+                Log.d("dsfsdf",String.valueOf(position));
+
+                pos=position;
+                Intent intent =new Intent(MainActivity.this,TodoDetialActivity.class);
                 intent.putExtra("item_info",item);
-                startActivity(intent);
+                Log.d("abababa", String.valueOf(item.getRemind()));
+                startActivityForResult(intent, 1);
             }
         });
 
+
+        //长按
         adapter.setOnLongClickListener(new TodoItemAdapter.OnLongClick() {
             @Override
             public void onLongClick(BeanTodo.Content item) {
+                todoitem=item;
+                Log.d("得到item", todoitem.getName());
+                dialogdelete.show();
             }
         });
 
@@ -187,8 +243,10 @@ public class MainActivity extends AppCompatActivity
         initPRI();
         initCalendar();
         //record数据
-        initRecord();
-        initRecordType();
+        if(isLogin){
+            initRecord();
+            initRecordType();
+        }
         recordList = (ListView)findViewById(R.id.recordList);
         recordGroupAdapter = new RecordGroupAdapter(this,groupList);
         recordList.setAdapter(recordGroupAdapter);
@@ -203,6 +261,57 @@ public class MainActivity extends AppCompatActivity
         }
         in.setText("总支出："+cost);
         out.setText("总收入："+sum);
+
+        //删除待办
+        initdialogdelete();
+    }
+
+    //发送通知
+    private void sendMessage(Date date){
+        Intent intent = new Intent(this, AutoReceiver.class);
+        intent.setAction("VIDEO_TIMER");
+        // PendingIntent这个类用于处理即将发生的事情 
+        PendingIntent sender = PendingIntent.getBroadcast(this, 0, intent, 0);
+        AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
+        // AlarmManager.ELAPSED_REALTIME_WAKEUP表示闹钟在睡眠状态下会唤醒系统并执行提示功能，该状态下闹钟使用相对时间
+        // SystemClock.elapsedRealtime()表示手机开始到现在经过的时间
+//        am.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+//                SystemClock.elapsedRealtime(), 10 * 1000, sender);
+        am.set(AlarmManager.RTC_WAKEUP, date.getTime(), sender);
+    }
+    //创建
+    private void createChannel() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            NotificationChannel notificationChannel=new NotificationChannel(CHANNEL_ID,CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT);
+            notificationChannel.setDescription(CHANNEL_DESCRIPTION);
+            NotificationManager notificationManager=getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(notificationChannel);
+        }
+    }
+    private void initdialogdelete(){
+        dialogdelete
+//                .setTitle("删除")
+                .setMessage("确定要删除该待办吗")
+//                .setIcon(R.mipmap.ic_launcher)
+                .create();
+        dialogdelete.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            // what if we click the alert;
+            public void onClick(DialogInterface dialog, int which) {
+
+                beanTodoList.remove(todoitem);
+                adapter.notifyDataSetChanged();
+                Log.d("删除",todoitem.getName());
+
+            }
+        });
+// Add a NegativeButton;
+        dialogdelete.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
     }
 
     //登陆跳转
@@ -580,10 +689,35 @@ public class MainActivity extends AppCompatActivity
                 remindDialog.show();
             }
         });
+
         //选择重复
         LinearLayout repeat = inflateCalendar.findViewById(R.id.repeat);
-
-
+        final TextView repeatText = inflateCalendar.findViewById(R.id.repeat_text);
+        final ImageView repeatImage = inflateCalendar.findViewById(R.id.repeat_image);
+        final Dialog repeatDialog = new Dialog(this,R.style.ActionSheetDialogStyle);
+        final View repeatFlater = LayoutInflater.from(this).inflate(R.layout.dialog_repeat,null);
+        repeatDialog.setContentView(repeatFlater);
+        Window repeatWindow = repeatDialog.getWindow();
+        repeatWindow.setGravity(Gravity.CENTER);
+        repeat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RadioGroup radioGroup = repeatFlater.findViewById(R.id.repeat_box);
+                radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(RadioGroup group, int checkedId) {
+                        RadioButton radioButton = repeatFlater.findViewById(checkedId);
+                        System.out.println(radioButton.getText());
+                        currentTodo.setRepeat(Integer.parseInt(String.valueOf(radioButton.getTag())));
+                        repeatText.setText(radioButton.getText());
+                        int color = getResources().getColor(R.color.colorTheme);
+                        repeatText.setTextColor(color);
+                        repeatImage.setColorFilter(color);
+                    }
+                });
+                repeatDialog.show();
+            }
+        });
 
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -600,6 +734,10 @@ public class MainActivity extends AppCompatActivity
                     int year = todoCalendar.getSelectedDate().getYear();
                     int month = todoCalendar.getSelectedDate().getMonth()+1;
                     int day = todoCalendar.getSelectedDate().getDay();
+                    String date=year+"-"+month+"-"+day+" "+timeText.getText();
+                    Log.d("fdsfds", date);
+                    Date d=formatStrSecond(date);
+                    currentTodo.setDate(d);
                 }
 
                 dialogCalendar.dismiss();
@@ -623,6 +761,43 @@ public class MainActivity extends AppCompatActivity
         });
 
     }
+
+    public void repeat() {
+        Calendar cal = Calendar.getInstance();
+
+        for (int i = 0; i < beanTodoList.size(); i++) {
+            BeanTodo.Content item = (BeanTodo.Content) beanTodoList.get(i);
+            if (item.getRepeat() == 1) {
+
+            } else if (item.getRepeat() == 2) {
+                if (!((cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) || (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY))) {
+                    item.setDate(new Date());
+                    beanTodoList.add(1,item);
+                    adapter.notifyDataSetChanged();
+                }
+
+            } else if (item.getRepeat() == 3) {
+                if ((cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) || (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)) {
+                    item.setDate(new Date());
+                    beanTodoList.add(1,item);
+                    adapter.notifyDataSetChanged();
+                }
+            }
+        }
+    }
+
+    //时间转换工具
+    public Date formatStrSecond(String str){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        try{
+            Date date = sdf.parse(str);
+
+            return date;
+        }catch(ParseException e){
+            e.printStackTrace();
+        }
+        return null;
+    }
     //时间转换工具
     public Date formatStr(String str){
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -634,6 +809,10 @@ public class MainActivity extends AppCompatActivity
             e.printStackTrace();
         }
         return null;
+    }
+    public String formatDateSecond(Date date){
+        SimpleDateFormat sdf =   new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
+        return sdf.format(date);
     }
     public String formatDate(Date date){
         SimpleDateFormat sdf =   new SimpleDateFormat( "yyyy-MM-dd" );
@@ -808,32 +987,59 @@ public class MainActivity extends AppCompatActivity
         BeanTodo t=new BeanTodo();
         if (!nav_dialog_edit.getText().toString().isEmpty())
         {
-            myDatebaseManager.addTodo(currentTodo);
+            currentTodo.setName(nav_dialog_edit.getText().toString());
+
+            Log.d("record",String.valueOf(currentTodo.getPRI()));
+            Log.d("record",currentTodo.getDate().toString());
+            Log.d("record",String.valueOf(currentTodo.getRemind()));
+            dbmanager.addTodo(currentTodo);
             Log.d("record","添加成功");
-        }
-        else{
+            BeanTodo.Content a=new BeanTodo.Content();
+            a.setName(currentTodo.getName());
+            a.setDate(currentTodo.getDate());
+            a.setDetail(currentTodo.getDetail());
+            a.setRemind(currentTodo.getRemind());
+            a.setPRI(currentTodo.getPRI());
+            a.setHaveDown(currentTodo.getHaveDown());
+            a.setRepeat(currentTodo.getRepeat());
+
+            beanTodoList.add(1,a);
+            adapter.notifyDataSetChanged();
+            Log.d("aaaaaa",currentTodo.getDate().toString());
+
+            if (currentTodo.getRemind()!=0) {
+                Date date = new Date();
+                switch (currentTodo.getRemind()) {
+                    case 1:
+                        date = getSpecifiedDayBefore(currentTodo.getDate(), 0);
+                    case 2:
+                        date = getSpecifiedDayBefore(currentTodo.getDate(), 1);
+                    case 3:
+                        date = getSpecifiedDayBefore(currentTodo.getDate(), 2);
+                    case 4:
+                        date = getSpecifiedDayBefore(currentTodo.getDate(), 3);
+                    case 5:
+                        date = getSpecifiedDayBefore(currentTodo.getDate(), 7);
+                }
+                sendMessage(date);
+                Log.d("aaaaaa", date.toString());
+            }
+        }else{
             Log.d("a", "error");
         }
 
     }
 
 
-    private void initTodoListItem() {
+    private void initTodoListItem(){
 
-        BeanTodo.Content item = new BeanTodo.Content(1,"好好学习1","ds",0,new Date(System.currentTimeMillis()),1,1,"fdfdfd");
-        BeanTodo.Content item2 = new BeanTodo.Content(2,"好好学习2","fdf",1,new Date(System.currentTimeMillis()),1,1,"fdfdfd");
-        BeanTodo.Content item3 = new BeanTodo.Content(3,"好好学习3","fdfdfdfd",1,new Date(System.currentTimeMillis()),1,1,"fdfdfd");
+            List<BeanTodo.Content>list=new ArrayList<>();
+            if (isLogin)
+                list= dbmanager.getTodoList();
+            BeanTodo haveNotTitle=new BeanTodo.Title("未完成");
+            BeanTodo haveDoneTitle=new BeanTodo.Title("已完成");
 
-        List<BeanTodo>list=new ArrayList<>();
-        list.add(item3);
-        list.add(item);
-        list.add(item2);
-        BeanTodo haveNotTitle=new BeanTodo.Title("未完成");
-        BeanTodo haveDoneTitle=new BeanTodo.Title("已完成");
-        List<BeanTodo.Content> notHaveDone =new ArrayList<>();
-        List<BeanTodo.Content> haveDone =new ArrayList<>();
-
-        for(int i=0;i<list.size();i++){
+            for(int i=0;i<list.size();i++){
             BeanTodo.Content a=(BeanTodo.Content)list.get(i);
             if (a.getHaveDown()==0)
                 notHaveDone.add((BeanTodo.Content)list.get(i));
@@ -895,13 +1101,6 @@ public class MainActivity extends AppCompatActivity
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-//        int id = item.getItemId();
-//
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -973,5 +1172,13 @@ public class MainActivity extends AppCompatActivity
             beanRecordGroup.setList(records);
             groupList.add(beanRecordGroup);
         }
+    }
+    //获得提前几天的日期
+    public static Date getSpecifiedDayBefore(Date specifiedDay,int d){
+        Calendar c = Calendar.getInstance();
+        c.setTime(specifiedDay);
+        int day=c.get(Calendar.DATE);
+        c.set(Calendar.DATE,day-d);
+        return c.getTime();
     }
 }

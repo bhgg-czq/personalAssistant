@@ -40,7 +40,6 @@ public class RecordGroupAdapter extends BaseAdapter {
         this.dbmanager = new MyDatebaseManager(context);
     }
 
-
     @Override
     public int getCount() {
         return itemList.size();

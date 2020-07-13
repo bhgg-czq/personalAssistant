@@ -51,9 +51,9 @@ public class BeanTodo implements Serializable{
            private Date date;
            private int remind;
            private int PRI;
-           private String tag;
+           private int repeat;
 
-            public Content(int id,String name,String detail,int haveDown,Date date,int remind,int PRI,String tag) {
+            public Content(int id,String name,String detail,int haveDown,Date date,int remind,int PRI,int repeat) {
                 this.id = id;
                 super.setName(name);
                 this.detail = detail;
@@ -61,8 +61,7 @@ public class BeanTodo implements Serializable{
                 this.date = date;
                 this.remind = remind;
                 this.PRI = PRI;
-                this.tag = tag;
-
+                this.repeat=repeat;
 
                 }
 
@@ -117,12 +116,12 @@ public class BeanTodo implements Serializable{
                 this.PRI = PRI;
             }
 
-            public String getTag() {
-                return tag;
+            public int getRepeat() {
+                return repeat;
             }
 
-            public void setTag(String tag) {
-                this.tag = tag;
+            public void setRepeat(int repeat) {
+                this.repeat = repeat;
             }
         }
 
