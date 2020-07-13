@@ -11,6 +11,7 @@
         android:layout_height="65dp"
         android:padding="10dp"
         android:background="@drawable/record_group_title"
+
         >
         <TextView
             android:layout_alignParentLeft="true"
@@ -21,25 +22,9 @@
             android:textColor="#000"
             android:gravity="center_vertical"
             android:textFontWeight="5"
+
             />
 
-        <TextView
-            android:layout_toLeftOf="@+id/out_sum"
-            android:id="@+id/in_sum"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="@string/pay"
-            android:gravity="center_vertical"
-            android:textColor="#000" />
-
-        <TextView
-            android:id="@+id/out_sum"
-            android:layout_alignParentRight="true"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:textColor="#000"
-            android:gravity="center_vertical"
-            android:text="@string/income" />
     </RelativeLayout>
     <com.baoyz.swipemenulistview.SwipeMenuListView
 

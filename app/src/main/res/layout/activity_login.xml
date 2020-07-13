@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -18,6 +19,7 @@
             app:popupTheme="@style/AppTheme.PopupOverlay">
 
             <ImageButton
+                android:id="@+id/login_back"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:background="@drawable/back_line"></ImageButton>

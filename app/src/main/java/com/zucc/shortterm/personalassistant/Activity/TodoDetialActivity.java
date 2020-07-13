@@ -1,4 +1,4 @@
-package com.zucc.shortterm.personalassistant;
+package com.zucc.shortterm.personalassistant.Activity;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatCheckBox;
 
 import com.zucc.shortterm.personalassistant.Bean.BeanTodo;
+import com.zucc.shortterm.personalassistant.R;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

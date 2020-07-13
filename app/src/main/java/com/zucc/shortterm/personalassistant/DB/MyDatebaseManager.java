@@ -46,9 +46,9 @@ public class MyDatebaseManager {
         db.insert("records",null,values);
     }
 
-    public List<Date> getGroupDate(){
+    public List<Date> getRecordDates(){
         List<Date> dates = new ArrayList<>();
-        String sql = "select distinct date from records";
+        String sql = "select distinct date from records order by date DESC";
         Cursor c = db.rawQuery(sql,null);
         while(c.moveToNext()){
             Date date = formatString(c.getString(c.getColumnIndex("date")));
@@ -72,6 +72,49 @@ public class MyDatebaseManager {
             records.add(beanRecord);
         }
         return records;
+    }
+
+    public ArrayList<BeanRecord> getRecordsByMonth(Date date){
+        ArrayList<BeanRecord> records = new ArrayList<>();
+        String d,d2;
+        if(date.getMonth() < 9){
+            d = (date.getYear()+1900)+"-0"+(date.getMonth()+1)+"-01";
+            d2 = (date.getYear()+1900)+"-0"+(date.getMonth()+1)+"-31";
+        }else{
+            d = (date.getYear()+1900)+"-"+(date.getMonth()+1)+"-01";
+            d2 = (date.getYear()+1900)+"-"+(date.getMonth()+1)+"-31";
+        }
+
+        String sql = "select * from records "+
+                "WHERE date BETWEEN '"+d+"' AND '"+d2+"'";
+        System.out.println(sql+"sql");
+        Cursor c = db.rawQuery(sql,null);
+        while(c.moveToNext()){
+            BeanRecord beanRecord = new BeanRecord(c.getInt(c.getColumnIndex("id")),
+                    c.getDouble(c.getColumnIndex("sum")),
+                    c.getInt(c.getColumnIndex("type")),
+                    c.getInt(c.getColumnIndex("isIn")),
+                    formatString(c.getString(c.getColumnIndex("date"))),
+                    c.getString(c.getColumnIndex("memo")));
+            records.add(beanRecord);
+        }
+        return records;
+    }
+
+    public ArrayList<BeanRecord> getRecordsByType(int typeId){
+        ArrayList<BeanRecord> list = new ArrayList<>();
+        String sql = "select * from records where tyep = "+typeId;
+        Cursor c = db.rawQuery(sql,null);
+        while(c.moveToNext()){
+            BeanRecord beanRecord = new BeanRecord(c.getInt(c.getColumnIndex("id")),
+                    c.getDouble(c.getColumnIndex("sum")),
+                    c.getInt(c.getColumnIndex("type")),
+                    c.getInt(c.getColumnIndex("isIn")),
+                    formatString(c.getString(c.getColumnIndex("date"))),
+                    c.getString(c.getColumnIndex("memo")));
+            list.add(beanRecord);
+        }
+        return list;
     }
 
     public Boolean deleteRecord(int id){

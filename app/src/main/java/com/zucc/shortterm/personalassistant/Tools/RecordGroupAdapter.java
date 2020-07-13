@@ -59,8 +59,6 @@ public class RecordGroupAdapter extends BaseAdapter {
     static class ViewHolder{
         public SwipeMenuListView listView;
         public TextView date;
-        public TextView inSum;
-        public TextView outSum;
     }
 
     @Override
@@ -71,8 +69,6 @@ public class RecordGroupAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.record_group, null);
             holder.listView = (SwipeMenuListView) convertView.findViewById(R.id.recordList_2);
             holder.date = convertView.findViewById(R.id.date);
-            holder.inSum = convertView.findViewById(R.id.in_sum);
-            holder.outSum = convertView.findViewById(R.id.out_sum);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -131,13 +127,13 @@ public class RecordGroupAdapter extends BaseAdapter {
                 menu.addMenuItem(swipeMenuItem);
             }
         };
+        final BeanRecordGroup group = itemList.get(position);
         recordList_2.setMenuCreator(swipeMenuCreator);
         recordList_2.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
-                System.out.println(list.get(position).getId()+"hellow????");
                 dbmanager.deleteRecord(list.get(position).getId());
-                list.remove(position);
+                group.deleteRecords(position);
                 recordItemAdapter.notifyDataSetChanged();
                 return true;
             }

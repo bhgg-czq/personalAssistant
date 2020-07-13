@@ -1,22 +1,21 @@
-package com.zucc.shortterm.personalassistant;
+package com.zucc.shortterm.personalassistant.Activity;
 
 import android.content.Intent;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.app.Dialog;
-import android.media.Image;
 import android.os.Bundle;
 
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
+import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -25,10 +24,10 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 
-import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.view.GravityCompat;
 import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AlertDialog;
+
 import android.view.MenuItem;
 
 import com.google.android.material.navigation.NavigationView;
@@ -39,8 +38,8 @@ import com.zucc.shortterm.personalassistant.DB.MyDatebaseManager;
 import com.zucc.shortterm.personalassistant.Bean.BeanRecord;
 import com.zucc.shortterm.personalassistant.Bean.BeanRecordGroup;
 import com.zucc.shortterm.personalassistant.Bean.BeanRecordType;
+import com.zucc.shortterm.personalassistant.R;
 import com.zucc.shortterm.personalassistant.Tools.RecordGroupAdapter;
-import com.zucc.shortterm.personalassistant.Tools.RecordItemAdapter;
 import com.zucc.shortterm.personalassistant.Tools.TodoItemAdapter;
 
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -48,27 +47,24 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.Menu;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.CompoundButton;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.Adapter;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
-import java.lang.reflect.Array;
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.zip.Inflater;
 
 import android.view.Window;
 import android.view.WindowManager;
@@ -77,6 +73,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -113,6 +110,9 @@ public class MainActivity extends AppCompatActivity
     //数据库实例
     private MyDatebaseManager dbmanager;
 
+    private Switch aSwitch;
+    private SharedPreferences sharedPreferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -120,6 +120,14 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
 
         dbmanager = new MyDatebaseManager(this);
+
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        if(sharedPreferences.getInt("night",0)==0){
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }else{
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        }
+
 
         //登陆
         ImageView imagelogin=findViewById(R.id.imagelogin);
@@ -136,7 +144,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onItemClick(BeanTodo.Content item) {
                 Log.d("dsfsdf",item.getName());
-                Intent intent =new Intent(MainActivity.this,TodoDetialActivity.class);
+                Intent intent =new Intent(MainActivity.this, TodoDetialActivity.class);
                 intent.putExtra("item_info",item);
                 startActivity(intent);
             }
@@ -184,6 +192,17 @@ public class MainActivity extends AppCompatActivity
         recordList = (ListView)findViewById(R.id.recordList);
         recordGroupAdapter = new RecordGroupAdapter(this,groupList);
         recordList.setAdapter(recordGroupAdapter);
+
+        TextView in = findViewById(R.id.income);
+        TextView out = findViewById(R.id.cost);
+        int sum = 0;
+        int cost = 0;
+        for(int i = 0;i<groupList.size();i++){
+            sum += groupList.get(i).getInSum();
+            cost += groupList.get(i).getOutSum();
+        }
+        in.setText("总支出："+cost);
+        out.setText("总收入："+sum);
     }
 
     //登陆跳转
@@ -384,7 +403,6 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 recordMemo.setText(memoTxet.getText());
-                System.out.println(memoTxet.getText()+"zhelizheli");
                 recordMemo.setTextColor(getResources().getColor(R.color.gray));
                 if(memoTxet.getText().toString().length()== 0){
                     recordMemo.setText("添加备注");
@@ -465,10 +483,11 @@ public class MainActivity extends AppCompatActivity
                 System.out.println(currentRecord.getDate()+currentRecord.getMemo()+currentRecord.getSum()+":"+currentRecord.getType()+currentRecord.getIn());
                 dialogRecordInfo.dismiss();
                 dbmanager.addRecord(currentRecord.getSum(),currentRecord.getType(),currentRecord.getDate(),currentRecord.getMemo(),currentRecord.getIn());
+                BeanRecord beanRecord = new BeanRecord(currentRecord.getId(),currentRecord.getSum(),currentRecord.getType(),currentRecord.getIn(),currentRecord.getDate(),currentRecord.getMemo());
                 int i = 0;
                 for(i = 0;i<groupList.size();i++){
                     if(formatDate(groupList.get(i).getDate()).equals(formatDate(currentRecord.getDate()))){
-                        groupList.get(i).getList().add(currentRecord);
+                        groupList.get(i).getList().add(beanRecord);
                         break;
                     }
                 }
@@ -476,8 +495,9 @@ public class MainActivity extends AppCompatActivity
                     BeanRecordGroup beanRecordGroup = new BeanRecordGroup();
                     beanRecordGroup.setDate(currentRecord.getDate());
                     ArrayList<BeanRecord> list = new ArrayList<>();
-                    list.add(currentRecord);
                     beanRecordGroup.setList(list);
+                    beanRecordGroup.addRecords(beanRecord);
+                    groupList.add(beanRecordGroup);
                 }
                 recordGroupAdapter.notifyDataSetChanged();
                 return true;
@@ -668,6 +688,16 @@ public class MainActivity extends AppCompatActivity
                 break;
             case 1:
                 content.setVisibility(View.GONE);
+                TextView in = findViewById(R.id.income);
+                TextView out = findViewById(R.id.cost);
+                int sum = 0;
+                int cost = 0;
+                for(int i = 0;i<groupList.size();i++){
+                    sum += groupList.get(i).getInSum();
+                    cost += groupList.get(i).getOutSum();
+                }
+                in.setText("总支出："+cost);
+                out.setText("总收入："+sum);
                 record.setVisibility(View.VISIBLE);
                 nowLayout = 1;
                 break;
@@ -838,6 +868,25 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+        aSwitch = findViewById(R.id.nav_night);
+        aSwitch.setChecked(sharedPreferences.getInt("night",0)==1);
+        aSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                    System.out.println("点击了？");
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putInt("night",1);
+                    editor.commit();
+                }else{
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putInt("night",0);
+                    editor.commit();
+                }
+            }
+        });
         return true;
     }
 
@@ -846,12 +895,12 @@ public class MainActivity extends AppCompatActivity
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+//        int id = item.getItemId();
+//
+//        //noinspection SimplifiableIfStatement
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -862,15 +911,13 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_home) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_tools) {
-
-        } else if (id == R.id.nav_share) {
+        if (id == R.id.nav_chart) {
+            Intent intent = new Intent(MainActivity.this,CountActivity.class);
+            startActivity(intent);
+        } else if (id == R.id.nav_product) {
+            Intent intent = new Intent(MainActivity.this,FinancingActivity.class);
+            startActivity(intent);
+        }  else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {
 
@@ -916,16 +963,13 @@ public class MainActivity extends AppCompatActivity
         BeanRecordType.setList(outlist,inlist);
     }
     public void initRecord(){
-        List<Date> dates = dbmanager.getGroupDate();
+        List<Date> dates = dbmanager.getRecordDates();
         for(int i = 0;i<dates.size();i++){
             BeanRecordGroup beanRecordGroup = new BeanRecordGroup();
             beanRecordGroup.setDate(dates.get(i));
             ArrayList<BeanRecord> records = dbmanager.getRecordsByDate(dates.get(i));
             if(records.size() == 0)
                 continue;
-            for(int j = 0;j<records.size();j++){
-                System.out.println(records.get(j).getType()+"这里是type！");
-            }
             beanRecordGroup.setList(records);
             groupList.add(beanRecordGroup);
         }

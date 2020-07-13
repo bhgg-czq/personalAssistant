@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:background="@color/white"
+    android:padding="15dp">
+
+    <TextView
+        android:id="@+id/pick_yeartitle"
+        android:layout_width="80dp"
+        android:layout_height="20dp"
+        android:gravity="center"
+        android:text="年份"/>
+    <TextView
+        android:id="@+id/pick_monthtitle"
+        android:layout_width="80dp"
+        android:layout_height="20dp"
+        android:layout_toRightOf="@+id/pick_yeartitle"
+        android:gravity="center"
+        android:text="月份"/>
+
+    <NumberPicker
+        android:id="@+id/pick_year"
+        android:layout_width="80dp"
+        android:layout_below="@id/pick_yeartitle"
+        android:layout_height="wrap_content"/>
+    <NumberPicker
+        android:id="@+id/pick_month"
+        android:layout_toRightOf="@+id/pick_year"
+        android:layout_below="@id/pick_monthtitle"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/pick_sure"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/pick_year"
+        android:background="@null"
+        android:textColor="@color/colorTheme"
+        android:text="确定"
+        />
+</RelativeLayout>

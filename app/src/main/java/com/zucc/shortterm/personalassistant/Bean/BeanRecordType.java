@@ -9,6 +9,8 @@ public class BeanRecordType {
     private int id;
     private Bitmap icon;
     private String name;
+    private int color;
+    private double sum;
     public static List<BeanRecordType> outlist;
     public static List<BeanRecordType> inlist;
 
@@ -17,7 +19,9 @@ public class BeanRecordType {
         BeanRecordType.inlist = inlist;
     }
 
-    public BeanRecordType(){};
+    public BeanRecordType(){
+        this.sum = 0;
+    };
 
     public BeanRecordType(int i,Bitmap icon,String name){
         this.id = i;
@@ -47,5 +51,21 @@ public class BeanRecordType {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getColor() {
+        return color;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
+    }
+
+    public double getSum() {
+        return sum;
+    }
+
+    public void setSum(double sum) {
+        this.sum = sum;
     }
 }
